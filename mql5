@@ -1,0 +1,64 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                              IndiceChampion.mq5 |
+//|                      Copyright 2022, Forex Robot Easy Team       |
+//|                                          https://forexroboteasy.com |
+//+------------------------------------------------------------------+
+
+//+------------------------------------------------------------------+
+//| Expert initialization function                                   |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Add initialization code here
+
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Expert deinitialization function                                 |
+//+------------------------------------------------------------------+
+void OnDeinit(const int reason)
+{
+    // Add deinitialization code here
+}
+
+//+------------------------------------------------------------------+
+//| Expert start function                                            |
+//+------------------------------------------------------------------+
+void OnTick()
+{
+    // Add trading logic here
+    // Analyze Forex market and open trades based on market conditions
+
+    // Open trades on H1 timeframe for Ger30 and S&P500 indices
+    if(Timeframe() == PERIOD_H1 && (Symbol() == 'Ger30' || Symbol() == 'S&P500'))
+    {
+        // Open trades based on market analysis
+        OrderSend(Symbol(), ORDER_TYPE_BUY, 1.0, Ask, 10, Bid - 10*Point, Bid + 10*Point, 'IndiceChampion', 0, 0, Green);
+    }
+
+    // Open trades on 5M timeframe for US30 index
+    if(Timeframe() == PERIOD_M5 && Symbol() == 'US30')
+    {
+        // Open trades based on market analysis
+        OrderSend(Symbol(), ORDER_TYPE_SELL, 1.0, Bid, 10, Ask + 10*Point, Ask - 10*Point, 'IndiceChampion', 0, 0, Red);
+    }
+
+    // Add risk management features here
+    // Manage risks and protect against potential losses
+
+    // Close trades based on certain conditions
+    if(AccountEquity() < 1000)
+    {
+        // Close all open trades
+        int total = OrdersTotal();
+        for(int i = total - 1; i >= 0; i--)
+        {
+            OrderSelect(i, SELECT_BY_POS, MODE_TRADES);
+            OrderClose(OrderTicket(), OrderLots(), OrderClosePrice(), 10, Red);
+        }
+    }
+}
+
+//+------------------------------------------------------------------+
